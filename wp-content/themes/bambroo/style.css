@@ -1,0 +1,70 @@
+/*
+Theme Name: Bambroo
+Theme URI: https://github.com/mojirt37/refactored-octo-waddle
+Author: Moji Moji
+Author URI: https://github.com/mojirt37
+Description: تم سفارشی برای فروشگاه اینترنتی بامبرو - پشتیبانی کامل از RTL و زبان فارسی.
+Version: 1.0.0
+License: MIT
+License URI: https://opensource.org/licenses/MIT
+Text Domain: bambroo
+*/
+
+/* Reset and Base Styles */
+body {
+    font-family: 'IRANSans', Tahoma, Arial, sans-serif;
+    direction: rtl;
+    text-align: right;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+/* Header Styles */
+header {
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+/* Main Content Styles */
+main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+/* RTL Support */
+.rtl {
+    direction: rtl;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+}
+
+/* Persian Font */
+@font-face {
+    font-family: 'IRANSans';
+    src: url('fonts/IRANSans.eot');
+    src: url('fonts/IRANSans.eot?#iefix') format('embedded-opentype'),
+         url('fonts/IRANSans.woff2') format('woff2'),
+         url('fonts/IRANSans.woff') format('woff'),
+         url('fonts/IRANSans.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
