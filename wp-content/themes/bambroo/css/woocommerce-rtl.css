@@ -1,0 +1,161 @@
+/*
+ * WooCommerce RTL Custom Styles for Bambroo Theme
+ */
+
+/* General RTL Styles */
+body.rtl {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Shop Page RTL Styles */
+.woocommerce-filters {
+    direction: rtl;
+    text-align: right;
+}
+
+.woocommerce-filters ul {
+    text-align: right;
+}
+
+/* Product Card RTL Styles */
+.product-card {
+    text-align: right;
+}
+
+/* Single Product Page RTL Styles */
+.single-product-container {
+    direction: rtl;
+}
+
+.single-product-container .woocommerce-product-gallery {
+    text-align: right;
+}
+
+.single-product-container .summary {
+    text-align: right;
+}
+
+/* Cart Page RTL Styles */
+.cart-container {
+    direction: rtl;
+}
+
+.cart-container table.cart {
+    text-align: right;
+}
+
+.cart-container table.cart th,
+.cart-container table.cart td {
+    text-align: right;
+}
+
+.cart-container .cart_totals {
+    text-align: right;
+}
+
+.cart-container .cart_totals table {
+    text-align: right;
+}
+
+/* Checkout Page RTL Styles */
+.checkout-container {
+    direction: rtl;
+    text-align: right;
+}
+
+.checkout-container .woocommerce-billing-fields,
+.checkout-container .woocommerce-shipping-fields {
+    text-align: right;
+}
+
+.checkout-container .form-row {
+    text-align: right;
+}
+
+.checkout-container .form-row input,
+.checkout-container .form-row select {
+    text-align: right;
+}
+
+/* WooCommerce Messages RTL Styles */
+.woocommerce-message,
+.woocommerce-error,
+.woocommerce-info {
+    text-align: right;
+}
+
+/* WooCommerce Forms RTL Styles */
+.woocommerce form .form-row {
+    text-align: right;
+}
+
+.woocommerce form .form-row input,
+.woocommerce form .form-row select,
+.woocommerce form .form-row textarea {
+    text-align: right;
+}
+
+/* WooCommerce Buttons RTL Styles */
+.woocommerce button,
+.woocommerce input[type="submit"] {
+    text-align: center;
+}
+
+/* WooCommerce Tables RTL Styles */
+.woocommerce table {
+    text-align: right;
+}
+
+.woocommerce table th,
+.woocommerce table td {
+    text-align: right;
+}
+
+/* WooCommerce Product Meta RTL Styles */
+.woocommerce-product-meta {
+    text-align: right;
+}
+
+/* WooCommerce Product Attributes RTL Styles */
+.woocommerce-product-attributes {
+    text-align: right;
+}
+
+.woocommerce-product-attributes th,
+.woocommerce-product-attributes td {
+    text-align: right;
+}
+
+/* WooCommerce Tabs RTL Styles */
+.woocommerce-tabs {
+    direction: rtl;
+}
+
+.woocommerce-tabs ul.tabs {
+    text-align: right;
+}
+
+.woocommerce-tabs ul.tabs li {
+    text-align: right;
+}
+
+/* WooCommerce Breadcrumbs RTL Styles */
+.woocommerce-breadcrumb {
+    text-align: right;
+}
+
+/* WooCommerce Pagination RTL Styles */
+.woocommerce-pagination {
+    text-align: right;
+}
+
+/* WooCommerce Price RTL Styles */
+.price {
+    text-align: right;
+}
+
+/* WooCommerce Quantity Input RTL Styles */
+.woocommerce .quantity input {
+    text-align: center;
+}
