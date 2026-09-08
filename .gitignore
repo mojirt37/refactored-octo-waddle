@@ -1,0 +1,39 @@
+# Ignore WordPress core files
+/wp-admin/
+/wp-includes/
+/wp-content/languages/
+/wp-content/uploads/
+
+# Ignore configuration files
+wp-config.php
+
+# Ignore IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore logs
+*.log
+
+# Ignore local development files
+*.env
+*.local
+
+# Ignore node_modules (if using npm)
+node_modules/
+
+# Ignore build files
+/build/
+/dist/
+
+# Ignore composer files
+vendor/
+composer.lock
+
+# Ignore package-lock.json
+package-lock.json
