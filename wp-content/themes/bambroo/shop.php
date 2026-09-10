@@ -8,12 +8,12 @@ get_header();
 ?>
 
 <main id="main-content" class="rtl">
-    <div class="shop-header">
+    <div class="shop-header container">
         <h1>فروشگاه بامبرو</h1>
         <p>مرجع رنگ و محصولات ساختمانی در ایران</p>
     </div>
 
-    <div class="shop-container">
+    <div class="shop-container container">
         <aside class="shop-sidebar">
             <div class="sidebar-widget">
                 <h3>دسته‌بندی‌ها</h3>
@@ -60,6 +60,10 @@ get_header();
         <div class="shop-main">
             <?php
             if (have_posts()) {
+                echo '<div class="woocommerce-notices">';
+                wc_print_notices();
+                echo '</div>';
+                
                 woocommerce_product_loop_start();
                 
                 while (have_posts()) : the_post();
