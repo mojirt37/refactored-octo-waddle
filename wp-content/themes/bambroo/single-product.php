@@ -12,13 +12,13 @@ get_header();
     while (have_posts()) : the_post();
         global $product;
         ?>
-        <div class="single-product-header">
+        <div class="single-product-header container">
             <nav class="woocommerce-breadcrumb">
                 <?php woocommerce_breadcrumb(); ?>
             </nav>
         </div>
 
-        <div class="single-product-container">
+        <div class="single-product-container container">
             <div class="product-gallery">
                 <?php
                 // نمایش گالری محصول
@@ -66,14 +66,14 @@ get_header();
             </div>
         </div>
 
-        <div class="product-tabs">
+        <div class="product-tabs container margin-bottom">
             <?php
             // نمایش تب‌های محصول
             woocommerce_output_product_data_tabs();
             ?>
         </div>
 
-        <div class="related-products">
+        <div class="related-products container margin-bottom">
             <?php
             // نمایش محصولات مرتبط
             woocommerce_output_related_products();
