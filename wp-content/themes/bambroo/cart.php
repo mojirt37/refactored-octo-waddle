@@ -8,20 +8,20 @@ get_header();
 ?>
 
 <main id="main-content" class="rtl">
-    <div class="cart-header">
+    <div class="cart-header container">
         <h1>سبد خرید</h1>
         <p>محصولات انتخاب شده توسط شما</p>
     </div>
 
-    <div class="cart-container">
+    <div class="cart-container container">
         <?php
         // نمایش پیام‌های WooCommerce
         wc_print_notices();
         
         // بررسی خالی بودن سبد خرید
         if (WC()->cart->is_empty()) {
-            echo '<p class="cart-empty">سبد خرید شما خالی است.</p>';
-            echo '<a href="' . esc_url(wc_get_page_permalink('shop')) . '" class="button">بازگشت به فروشگاه</a>';
+            echo '<p class="cart-empty text-center">سبد خرید شما خالی است.</p>';
+            echo '<div class="text-center"><a href="' . esc_url(wc_get_page_permalink('shop')) . '" class="button">بازگشت به فروشگاه</a></div>';
         } else {
             // نمایش جدول سبد خرید
             do_action('woocommerce_before_cart');
@@ -42,7 +42,6 @@ get_header();
                         <?php
                         foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
                             $_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);
-                            $product_permalink = apply_filters('woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink($cart_item) : '', $cart_item, $cart_item_key);
                             
                             if ($_product && $_product->exists() && $cart_item['quantity'] > 0) {
                                 $product_permalink = apply_filters('woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink($cart_item) : '', $cart_item, $cart_item_key);
@@ -82,8 +81,6 @@ get_header();
                                         } else {
                                             echo wp_kses_post(apply_filters('woocommerce_cart_item_name', sprintf('<a href="%s">%s</a>', esc_url($product_permalink), $_product->get_name()), $cart_item, $cart_item_key));
                                         }
-                                        
-                                        do_action('woocommerce_after_cart_item_name', $cart_item, $cart_item_key);
                                         
                                         // نمایش متا دیتا (مثل کد رنگ)
                                         echo wc_get_formatted_cart_item_data($cart_item);
