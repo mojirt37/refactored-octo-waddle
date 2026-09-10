@@ -8,12 +8,12 @@ get_header();
 ?>
 
 <main id="main-content" class="rtl">
-    <div class="about-header">
+    <div class="about-header container">
         <h1>درباره بامبرو</h1>
         <p>مرجع رنگ و محصولات ساختمانی در ایران</p>
     </div>
 
-    <div class="about-container">
+    <div class="about-container container">
         <div class="about-content">
             <h2>داستان ما</h2>
             <p>
@@ -55,7 +55,7 @@ get_header();
         </div>
     </div>
 
-    <div class="about-team">
+    <div class="about-team container margin-bottom">
         <h2>تیم ما</h2>
         <div class="team-members">
             <div class="team-member">
@@ -73,15 +73,6 @@ get_header();
                 <h3>کارشناس فنی</h3>
                 <p>رضا کریمی</p>
             </div>
-        </div>
-    </div>
-
-    <div class="about-partners">
-        <h2>همکاران ما</h2>
-        <div class="partners-logos">
-            <img src="<?php echo esc_url(get_template_directory_uri() . '/images/partner-1.png'); ?>" alt="همکار ۱">
-            <img src="<?php echo esc_url(get_template_directory_uri() . '/images/partner-2.png'); ?>" alt="همکار ۲">
-            <img src="<?php echo esc_url(get_template_directory_uri() . '/images/partner-3.png'); ?>" alt="همکار ۳">
         </div>
     </div>
 </main>
