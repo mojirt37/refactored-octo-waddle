@@ -4,89 +4,113 @@
  */
 
 jQuery(document).ready(function($) {
-    // Display WooCommerce messages as alerts
-    if ($('.woocommerce-message, .woocommerce-error, .woocommerce-info').length) {
-        $('.woocommerce-message, .woocommerce-error, .woocommerce-info').each(function() {
-            var message = $(this).text().trim();
-            if (message) {
-                alert(message);
-            }
-        });
-    }
-
-    // Add active class to current menu item
-    $('.main-navigation a').each(function() {
-        if ($(this).attr('href') === window.location.href) {
-            $(this).addClass('active');
-        }
-    });
-
-    // Mobile menu toggle
+    // ===== MOBILE MENU TOGGLE =====
     $('.mobile-menu-toggle').on('click', function() {
         $('.main-navigation').toggleClass('mobile-active');
+        $(this).toggleClass('active');
+        $('body').toggleClass('mobile-menu-open');
     });
 
     // Close mobile menu when clicking on a link
     $('.main-navigation a').on('click', function() {
         if ($(window).width() < 768) {
             $('.main-navigation').removeClass('mobile-active');
+            $('.mobile-menu-toggle').removeClass('active');
+            $('body').removeClass('mobile-menu-open');
         }
     });
 
-    // Scroll to top button
-    $('.scroll-to-top').on('click', function() {
-        $('html, body').animate({ scrollTop: 0 }, 'slow');
-    });
-
-    // Show/hide scroll to top button
+    // ===== SCROLL TO TOP BUTTON =====
     $(window).on('scroll', function() {
         if ($(this).scrollTop() > 100) {
-            $('.scroll-to-top').fadeIn();
+            $('.scroll-to-top').addClass('visible');
         } else {
-            $('.scroll-to-top').fadeOut();
+            $('.scroll-to-top').removeClass('visible');
         }
+    });
+
+    $('.scroll-to-top').on('click', function(e) {
+        e.preventDefault();
+        $('html, body').animate({ scrollTop: 0 }, 'smooth');
     });
 
     // Add scroll to top button to the page
     if (!$('.scroll-to-top').length) {
-        $('body').append('<a href="#" class="scroll-to-top" style="display: none; position: fixed; bottom: 20px; right: 20px; background-color: #4caf50; color: white; padding: 10px; border-radius: 50%; text-decoration: none; font-size: 20px; z-index: 999;">↑</a>');
+        $('body').append('<a href="#" class="scroll-to-top" aria-label="برو به بالای صفحه"><i class="fas fa-chevron-up"></i></a>');
     }
 
-    // Display product color code visually
-    $('.product-color-code span').each(function() {
-        var colorCode = $(this).text();
-        $(this).css('background-color', colorCode);
-        $(this).css('color', getContrastColor(colorCode));
-        $(this).css('padding', '0.25rem 0.5rem');
-        $(this).css('border-radius', '3px');
+    // ===== PRODUCT CARD HOVER EFFECTS =====
+    $('.product-card').on('mouseenter', function() {
+        $(this).addClass('hover');
+    }).on('mouseleave', function() {
+        $(this).removeClass('hover');
     });
 
-    // Calculate contrast color for better readability
-    function getContrastColor(hexColor) {
-        var r = parseInt(hexColor.substr(1, 2), 16);
-        var g = parseInt(hexColor.substr(3, 2), 16);
-        var b = parseInt(hexColor.substr(5, 2), 16);
-        var brightness = (r * 299 + g * 587 + b * 114) / 1000;
-        return brightness > 128 ? '#000000' : '#FFFFFF';
+    // ===== PRODUCT GALLERY =====
+    if (typeof $.fn.slick === 'function') {
+        $('.woocommerce-product-gallery__wrapper').slick({
+            dots: true,
+            infinite: true,
+            speed: 500,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            rtl: true,
+            adaptiveHeight: true,
+            arrows: true,
+            prevArrow: '<button type="button" class="slick-prev"><i class="fas fa-chevron-right"></i></button>',
+            nextArrow: '<button type="button" class="slick-next"><i class="fas fa-chevron-left"></i></button>',
+        });
     }
 
-    // Show success message after adding to cart
-    $(document.body).on('added_to_cart', function() {
-        alert('محصول با موفقیت به سبد خرید اضافه شد!');
+    // ===== PRODUCT CATEGORY TOGGLE =====
+    $('.toggle-children').on('click', function() {
+        var $this = $(this);
+        var $children = $this.closest('li').find('.children');
+        var isExpanded = $this.attr('aria-expanded') === 'true';
+
+        $this.attr('aria-expanded', !isExpanded);
+        $children.attr('aria-hidden', isExpanded);
+
+        if (isExpanded) {
+            $children.slideUp();
+        } else {
+            $children.slideDown();
+        }
     });
 
-    // Update cart fragments via AJAX
+    // ===== QUANTITY INPUT SPINNER =====
+    $('.quantity input').on('focus', function() {
+        $(this).closest('.quantity').addClass('focus');
+    }).on('blur', function() {
+        $(this).closest('.quantity').removeClass('focus');
+    });
+
+    // Prevent direct input for quantity
+    $('.quantity input').on('keydown', function(e) {
+        if (e.key === '+' || e.key === '-' || e.key === 'e') {
+            e.preventDefault();
+        }
+    });
+
+    // ===== ADD TO CART AJAX =====
     $(document.body).on('added_to_cart', function() {
+        // Show success message
+        var message = '<div class="woocommerce-message" role="alert">محصول با موفقیت به سبد خرید اضافه شد!</div>';
+        $('.woocommerce-notices').html(message).fadeIn();
+
+        // Update cart fragments
         var fragments = {
-            'div.widget_shopping_cart_content': 1
+            'div.widget_shopping_cart_content': 1,
+            'a.cart-contents': 1
         };
-        
+
         $.ajax({
             type: 'POST',
             url: wc_add_to_cart_params.ajax_url,
             data: {
                 action: 'woocommerce_get_refreshed_fragments',
-                fragments: fragments
+                fragments: fragments,
+                nonce: wc_add_to_cart_params.nonce
             },
             success: function(response) {
                 if (response.fragments) {
@@ -96,58 +120,334 @@ jQuery(document).ready(function($) {
                 }
             }
         });
+
+        // Hide message after 3 seconds
+        setTimeout(function() {
+            $('.woocommerce-message').fadeOut();
+        }, 3000);
     });
 
-    // Image preview modal
-    $('.product-card img').on('click', function() {
+    // ===== CART UPDATES =====
+    $(document.body).on('updated_cart_totals', function() {
+        // Reload the page to update cart
+        location.reload();
+    });
+
+    // ===== CHECKOUT FORM VALIDATION =====
+    $(document.body).on('checkout_error', function() {
+        // Scroll to the first error
+        var $firstError = $('.woocommerce-invalid:first');
+        if ($firstError.length) {
+            $('html, body').animate({
+                scrollTop: $firstError.offset().top - 100
+            }, 500);
+        }
+    });
+
+    // ===== PRODUCT TABS =====
+    $('.woocommerce-tabs ul.tabs li a').on('click', function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        var $tab = $this.closest('li');
+        var $tabs = $this.closest('ul.tabs');
+        var tabId = $this.attr('href');
+
+        // Remove active class from all tabs
+        $tabs.find('li').removeClass('active');
+        $tab.addClass('active');
+
+        // Hide all panels
+        $tabs.closest('.woocommerce-tabs').find('.panel').hide();
+
+        // Show selected panel
+        $(tabId).show();
+    });
+
+    // ===== PRODUCT FILTERING =====
+    $('.woocommerce-filters select, .woocommerce-filters input').on('change', function() {
+        var $form = $(this).closest('form');
+        if ($form.length) {
+            $form.submit();
+        }
+    });
+
+    // ===== PRICE FILTER SLIDER =====
+    if (typeof $.fn.slider === 'function') {
+        $('.price_slider').each(function() {
+            var $this = $(this);
+            var $amount = $this.next('.price_slider_amount');
+            var $inputMin = $this.find('.price_slider_min');
+            var $inputMax = $this.find('.price_slider_max');
+
+            $this.slider({
+                range: true,
+                min: parseFloat($inputMin.data('min')),
+                max: parseFloat($inputMax.data('max')),
+                values: [parseFloat($inputMin.val()), parseFloat($inputMax.val())],
+                create: function() {
+                    $amount.find('.from').text($this.slider('values', 0).toLocaleString('fa-IR'));
+                    $amount.find('.to').text($this.slider('values', 1).toLocaleString('fa-IR'));
+                },
+                slide: function(event, ui) {
+                    $inputMin.val(ui.values[0]);
+                    $inputMax.val(ui.values[1]);
+                    $amount.find('.from').text(ui.values[0].toLocaleString('fa-IR'));
+                    $amount.find('.to').text(ui.values[1].toLocaleString('fa-IR'));
+                },
+                change: function(event, ui) {
+                    $(this).closest('form').submit();
+                }
+            });
+        });
+    }
+
+    // ===== PRODUCT COLOR CODE DISPLAY =====
+    $('.product-color-code span').each(function() {
+        var colorCode = $(this).text();
+        var contrastColor = getContrastColor(colorCode);
+        $(this).css({
+            'background-color': colorCode,
+            'color': contrastColor,
+            'padding': '0.25rem 0.5rem',
+            'border-radius': '3px',
+            'display': 'inline-block',
+            'font-weight': 'bold'
+        });
+    });
+
+    // Calculate contrast color for text
+    function getContrastColor(hexColor) {
+        var r = parseInt(hexColor.substr(1, 2), 16);
+        var g = parseInt(hexColor.substr(3, 2), 16);
+        var b = parseInt(hexColor.substr(5, 2), 16);
+        var brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness > 128 ? '#000000' : '#FFFFFF';
+    }
+
+    // ===== PRODUCT IMAGE PREVIEW MODAL =====
+    $('.product-card img, .woocommerce-product-gallery__image img').on('click', function(e) {
+        e.preventDefault();
         var imageUrl = $(this).attr('src');
-        $('#image-preview').attr('src', imageUrl);
+        var imageAlt = $(this).attr('alt');
+
+        // Create modal if it doesn't exist
+        if (!$('#image-preview-modal').length) {
+            $('body').append('\n' +
+                '<div id="image-preview-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: ' + (parseInt($('.whatsapp-float').css('z-index')) + 100) + '; justify-content: center; align-items: center;">\n' +
+                '    <span id="close-preview" style="position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer;" aria-label="بستن">&times;</span>\n' +
+                '    <img id="image-preview" style="max-width: 90%; max-height: 90%;" src="" alt="" />\n' +
+                '</div>\n' +
+                '');
+        }
+
+        $('#image-preview').attr({'src': imageUrl, 'alt': imageAlt});
         $('#image-preview-modal').fadeIn();
     });
 
     // Close image preview modal
-    $('#image-preview-modal, #close-preview').on('click', function() {
-        $('#image-preview-modal').fadeOut();
+    $(document).on('click', '#close-preview, #image-preview-modal', function(e) {
+        if (e.target.id === 'image-preview-modal' || e.target.id === 'close-preview') {
+            $('#image-preview-modal').fadeOut();
+        }
     });
 
     // Prevent closing modal when clicking on the image
-    $('#image-preview').on('click', function(e) {
+    $(document).on('click', '#image-preview', function(e) {
         e.stopPropagation();
     });
 
-    // Add image preview modal to the page
-    if (!$('#image-preview-modal').length) {
-        $('body').append('\n' +
-            '<div id="image-preview-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 9999; justify-content: center; align-items: center;">\n' +
-            '    <span id="close-preview" style="position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer;">&times;</span>\n' +
-            '    <img id="image-preview" style="max-width: 90%; max-height: 90%;" src="" alt="پیش‌نمایش">\n' +
-            '</div>\n' +
-            '');
-    }
+    // Close modal with ESC key
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && $('#image-preview-modal').is(':visible')) {
+            $('#image-preview-modal').fadeOut();
+        }
+    });
 
-    // Read more/less functionality
-    $('.product-description').each(function() {
-        var fullText = $(this).text();
-        if (fullText.length > 200) {
-            var shortText = fullText.substr(0, 200) + '...';
-            $(this).html(shortText + '<a href="#" class="read-more">بیشتر بخوانید</a>');
-            $(this).append('<span class="full-text" style="display: none;">' + fullText + '</span>');
+    // ===== READ MORE/LESS FUNCTIONALITY =====
+    $('.product-description, .additional-info-content').each(function() {
+        var $this = $(this);
+        var fullText = $this.text();
+        var words = fullText.split(' ');
+
+        if (words.length > 50) {
+            var shortText = words.slice(0, 50).join(' ') + '...';
+            $this.html(shortText + '<a href="#" class="read-more">بیشتر بخوانید</a>');
+            $this.append('<span class="full-text" style="display: none;">' + fullText + '</span>');
         }
     });
 
     // Read more link click
     $(document).on('click', '.read-more', function(e) {
         e.preventDefault();
-        var fullText = $(this).siblings('.full-text').text();
-        $(this).parent().html(fullText + '<a href="#" class="read-less">کمتر بخوانید</a>');
+        var $this = $(this);
+        var fullText = $this.siblings('.full-text').text();
+        $this.parent().html(fullText + '<a href="#" class="read-less">کمتر بخوانید</a>');
     });
 
     // Read less link click
     $(document).on('click', '.read-less', function(e) {
         e.preventDefault();
-        var fullText = $(this).parent().text().replace('کمتر بخوانید', '').trim();
-        var shortText = fullText.substr(0, 200) + '...';
-        $(this).parent().html(shortText + '<a href="#" class="read-more">بیشتر بخوانید</a>');
-        $(this).parent().append('<span class="full-text" style="display: none;">' + fullText + '</span>');
+        var $this = $(this);
+        var fullText = $this.parent().text().replace('کمتر بخوانید', '').trim();
+        var words = fullText.split(' ');
+        var shortText = words.slice(0, 50).join(' ') + '...';
+        $this.parent().html(shortText + '<a href="#" class="read-more">بیشتر بخوانید</a>');
+        $this.parent().append('<span class="full-text" style="display: none;">' + fullText + '</span>');
     });
+
+    // ===== FORM VALIDATION =====
+    $('form.woocommerce-form').on('submit', function(e) {
+        var $form = $(this);
+        var isValid = true;
+
+        // Validate required fields
+        $form.find('[required]').each(function() {
+            if (!$(this).val().trim()) {
+                isValid = false;
+                $(this).addClass('error');
+            } else {
+                $(this).removeClass('error');
+            }
+        });
+
+        // Validate email format
+        $form.find('input[type="email"]').each(function() {
+            var email = $(this).val().trim();
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                isValid = false;
+                $(this).addClass('error');
+            } else {
+                $(this).removeClass('error');
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+            var $firstError = $form.find('.error:first');
+            if ($firstError.length) {
+                $('html, body').animate({
+                    scrollTop: $firstError.offset().top - 100
+                }, 500);
+            }
+        }
+    });
+
+    // Clear error on input
+    $('form.woocommerce-form input, form.woocommerce-form textarea').on('input', function() {
+        $(this).removeClass('error');
+    });
+
+    // ===== STOCK STATUS DISPLAY =====
+    $('.stock-status').each(function() {
+        var $this = $(this);
+        if ($this.hasClass('in-stock')) {
+            $this.css('color', '#4CAF50');
+        } else if ($this.hasClass('out-of-stock')) {
+            $this.css('color', '#F44336');
+        }
+    });
+
+    // ===== PRODUCT RATING DISPLAY =====
+    $('.star-rating').each(function() {
+        var $this = $(this);
+        var rating = parseFloat($this.attr('aria-rating'));
+        var fullStars = Math.floor(rating);
+        var halfStar = rating % 1 >= 0.5 ? 1 : 0;
+        var emptyStars = 5 - fullStars - halfStar;
+
+        $this.html('');
+        for (var i = 0; i < fullStars; i++) {
+            $this.append('<i class="fas fa-star"></i>');
+        }
+        if (halfStar) {
+            $this.append('<i class="fas fa-star-half-alt"></i>');
+        }
+        for (var i = 0; i < emptyStars; i++) {
+            $this.append('<i class="far fa-star"></i>');
+        }
+    });
+
+    // ===== WHATSAPP FLOAT BUTTON =====
+    $('.whatsapp-float').on('click', function(e) {
+        e.preventDefault();
+        var phoneNumber = $(this).attr('href').replace('https://wa.me/', '');
+        window.open('https://wa.me/' + phoneNumber, '_blank');
+    });
+
+    // ===== ACCESSIBILITY IMPROVEMENTS =====
+    
+    // Add focus styles for keyboard navigation
+    $('a, button, input, select, textarea').on('focus', function() {
+        $(this).addClass('keyboard-focus');
+    }).on('blur', function() {
+        $(this).removeClass('keyboard-focus');
+    });
+
+    // Skip to content functionality
+    $('.skip-to-content').on('click', function(e) {
+        e.preventDefault();
+        var target = $(this).attr('href');
+        $(target).attr('tabindex', -1).focus();
+    });
+
+    // ===== LAZY LOAD IMAGES =====
+    if ('loading' in HTMLImageElement.prototype) {
+        $('img').each(function() {
+            if (!$(this).attr('loading')) {
+                $(this).attr('loading', 'lazy');
+            }
+        });
+    }
+
+    // ===== RESPONSIVE ADJUSTMENTS =====
+    function handleResponsive() {
+        if ($(window).width() < 768) {
+            // Mobile adjustments
+            $('.woocommerce-tabs ul.tabs').addClass('mobile-tabs');
+        } else {
+            // Desktop adjustments
+            $('.woocommerce-tabs ul.tabs').removeClass('mobile-tabs');
+        }
+    }
+
+    // Run on load and resize
+    handleResponsive();
+    $(window).on('resize', handleResponsive);
+
+    // ===== INITIALIZE ALL FUNCTIONALITY =====
+    function initializeBambroo() {
+        // Initialize all components
+        handleResponsive();
+
+        // Add ARIA attributes for accessibility
+        $('a[href^="#"]').each(function() {
+            var $this = $(this);
+            if (!$this.attr('aria-label') && $this.text().trim()) {
+                $this.attr('aria-label', 'برو به ' + $this.text().trim());
+            }
+        });
+
+        // Add role attributes
+        $('.button, button, input[type="submit"], input[type="button"]').attr('role', 'button');
+    }
+
+    // Run initialization
+    initializeBambroo();
 });
+
+// ===== GLOBAL FUNCTIONS =====
+
+// Format Persian numbers
+function toPersianNumber(num) {
+    var persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    return num.toString().replace(/\d/g, function(digit) {
+        return persianDigits[parseInt(digit)];
+    });
+}
+
+// Format price with Persian numbers
+function formatPersianPrice(price) {
+    return price.replace(/\d+/g, function(num) {
+        return toPersianNumber(num);
+    });
+}
