@@ -8,34 +8,34 @@ get_header();
 ?>
 
 <main id="main-content" class="rtl">
-    <div class="checkout-header">
+    <div class="checkout-header container">
         <h1>تسویه حساب</h1>
         <p>تکمیل اطلاعات برای خرید</p>
     </div>
 
-    <div class="checkout-container">
+    <div class="checkout-container container">
         <?php
         // نمایش پیام‌های WooCommerce
         wc_print_notices();
         
         // بررسی اینکه آیا سبد خرید خالی است
         if (WC()->cart->is_empty()) {
-            echo '<p class="checkout-empty">سبد خرید شما خالی است. لطفاً ابتدا محصولاتی را به سبد خرید اضافه کنید.</p>';
-            echo '<a href="' . esc_url(wc_get_page_permalink('shop')) . '" class="button">بازگشت به فروشگاه</a>';
+            echo '<p class="checkout-empty text-center">سبد خرید شما خالی است. لطفاً ابتدا محصولاتی را به سبد خرید اضافه کنید.</p>';
+            echo '<div class="text-center"><a href="' . esc_url(wc_get_page_permalink('shop')) . '" class="button">بازگشت به فروشگاه</a></div>';
         } else {
-            // نمایش فرم تسویه حساب
-            do_action('woocommerce_before_checkout_form', $checkout);
-            
             // بررسی اینکه آیا کاربر وارد شده است
             if (!is_user_logged_in() && 'no' === get_option('woocommerce_enable_guest_checkout')) {
-                echo '<p class="woocommerce-info">لطفاً برای تسویه حساب وارد حساب کاربری خود شوید.</p>';
+                echo '<p class="woocommerce-info text-center">لطفاً برای تسویه حساب وارد حساب کاربری خود شوید.</p>';
                 woocommerce_login_form(array(
                     'message' => __('برای تسویه حساب وارد شوید.', 'woocommerce'),
                     'redirect' => wc_get_page_permalink('checkout'),
                 ));
             } else {
                 // نمایش فرم تسویه حساب
-                form_start($checkout);
+                do_action('woocommerce_before_checkout_form', $checkout);
+                
+                // شروع فرم تسویه حساب
+                echo '<form name="checkout" method="post" class="checkout woocommerce-checkout" action="' . esc_url(wc_get_checkout_url()) . '" enctype="multipart/form-data">';
                 
                 if (sizeof($checkout->checkouts) > 1) {
                     foreach ($checkout->checkouts as $checkout) {
@@ -65,27 +65,18 @@ get_header();
                     do_action('woocommerce_checkout_after_order_review');
                 }
                 
-                form_end($checkout);
+                // پایان فرم تسویه حساب
+                wp_nonce_field('woocommerce-process_checkout', 'woocommerce-process-checkout-nonce');
+                echo '<input type="hidden" name="woocommerce_checkout_update_totals" value="update" />';
+                echo '</form>';
+                
+                do_action('woocommerce_after_checkout_form', $checkout);
             }
-            
-            do_action('woocommerce_after_checkout_form', $checkout);
         }
         ?>
     </div>
 </main>
 
 <?php
-// تابع کمکی برای شروع فرم تسویه حساب
-function form_start($checkout) {
-    echo '<form name="checkout" method="post" class="checkout woocommerce-checkout" action="' . esc_url(wc_get_checkout_url()) . '" enctype="multipart/form-data">';
-}
-
-// تابع کمکی برای پایان فرم تسویه حساب
-function form_end($checkout) {
-    wp_nonce_field('woocommerce-process_checkout', 'woocommerce-process-checkout-nonce');
-    echo '<input type="hidden" name="woocommerce_checkout_update_totals" value="update" />';
-    echo '</form>';
-}
-
 get_footer();
 ?>
