@@ -1,0 +1,43 @@
+/*
+ * Bambroo Design Tokens
+ * CSS Variables for consistent theming
+ */
+
+:root {
+    /* Colors */
+    --color-primary: #2E7D32;
+    --color-primary-dark: #1B5E20;
+    --color-accent: #FF9800;
+    --color-surface: #FFFFFF;
+    --color-background: #F5F5F5;
+    --color-text: #212121;
+    --color-muted-text: #757575;
+    --color-border: #E0E0E0;
+    --color-success: #4CAF50;
+    --color-warning: #FFC107;
+    --color-error: #F44336;
+
+    /* Typography */
+    --font-primary: 'IRANSans', sans-serif;
+    --font-size-base: 16px;
+    --font-size-large: 18px;
+    --font-size-small: 14px;
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 3rem;
+
+    /* Border Radius */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
