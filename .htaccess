@@ -25,11 +25,21 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   deny from all
 </files>
 
-# Restrict access to wp-admin
+<files readme.html>
+  order allow,deny
+  deny from all
+</files>
+
+<files license.txt>
+  order allow,deny
+  deny from all
+</files>
+
+# Restrict access to wp-admin by IP (Replace YOUR_IP_ADDRESS with actual server IP)
 <FilesMatch "wp-admin">
   Order Deny,Allow
   Deny from all
-  Allow from YOUR_IP_ADDRESS
+  Allow from 127.0.0.1
 </FilesMatch>
 
 # Static cache
@@ -39,12 +49,19 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   ExpiresByType image/jpeg "access 1 year"
   ExpiresByType image/gif "access 1 year"
   ExpiresByType image/png "access 1 year"
+  ExpiresByType image/webp "access 1 year"
   ExpiresByType text/css "access 1 month"
   ExpiresByType text/html "access 1 month"
   ExpiresByType application/pdf "access 1 month"
   ExpiresByType text/x-javascript "access 1 month"
-  ExpiresByType application/x-shockwave-flash "access 1 month"
-  ExpiresByType image/x-icon "access 1 year"
+  ExpiresByType application/javascript "access 1 month"
+  ExpiresByType application/x-javascript "access 1 month"
+  ExpiresByType application/xml "access 1 month"
+  ExpiresByType application/xhtml+xml "access 1 month"
+  ExpiresByType application/rdf+xml "access 1 month"
+  ExpiresByType application/atom+xml "access 1 month"
+  ExpiresByType application/json "access 1 month"
+  ExpiresByType application/ld+json "access 1 month"
   ExpiresDefault "access 1 month"
 </IfModule>
 
@@ -66,4 +83,28 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   AddOutputFilterByType DEFLATE application/atom+xml
   AddOutputFilterByType DEFLATE application/json
   AddOutputFilterByType DEFLATE application/ld+json
+</IfModule>
+
+# Hotlinking protection for all static files
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_REFERER} !^https://bambroo.ir/.* [NC]
+  RewriteCond %{HTTP_REFERER} !^https://bambroo.ir$ [NC]
+  RewriteCond %{HTTP_REFERER} !^https://www.bambroo.ir/.* [NC]
+  RewriteCond %{HTTP_REFERER} !^https://www.bambroo.ir$ [NC]
+  RewriteRule \.(jpg|jpeg|png|gif|webp|css|js|pdf)$ - [NC,F,L]
+</IfModule>
+
+# Block search queries from being indexed
+RewriteCond %{QUERY_STRING} ^s= [NC]
+RewriteRule ^ - [F,L]
+
+# Security headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https:;"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 </IfModule>
