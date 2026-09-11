@@ -3,24 +3,24 @@
  * The base configuration for WordPress
  *
  * This file contains the following configurations: MySQL settings, Table Prefix,
- * Secret Keys, WordPress Language, and ABSPATH. You can find more information
- * by visiting {@link https://codex.wordpress.org/Editing_wp-config.php}.
+ * Secret Keys, WordPress Language, and ABSPATH. You can find more information by
+ * visiting {@link https://codex.wordpress.org/Editing_wp-config.php}.
  *
  * @package WordPress
  */
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', 'bambroo_db');
+define('DB_NAME', getenv('DB_NAME') ?: 'bambroo_db');
 
 /** MySQL database username */
-define('DB_USER', 'bambroo_user');
+define('DB_USER', getenv('DB_USER') ?: 'bambroo_user');
 
 /** MySQL database password */
-define('DB_PASSWORD', 'secure_password_here');
+define('DB_PASSWORD', getenv('DB_PASSWORD') ?: '');
 
 /** MySQL hostname */
-define('DB_HOST', 'localhost');
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
 
 /** Database charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8mb4');
@@ -34,14 +34,14 @@ define('DB_COLLATE', '');
  * Change these to different unique phrases! You can generate these using
  * the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}.
  */
-define('AUTH_KEY',         'unique_auth_key_here');
-define('SECURE_AUTH_KEY',  'unique_secure_auth_key_here');
-define('LOGGED_IN_KEY',    'unique_logged_in_key_here');
-define('NONCE_KEY',        'unique_nonce_key_here');
-define('AUTH_SALT',        'unique_auth_salt_here');
-define('SECURE_AUTH_SALT', 'unique_secure_auth_salt_here');
-define('LOGGED_IN_SALT',   'unique_logged_in_salt_here');
-define('NONCE_SALT',       'unique_nonce_salt_here');
+define('AUTH_KEY',         getenv('AUTH_KEY') ?: 'put-your-unique-phrase-here');
+define('SECURE_AUTH_KEY',  getenv('SECURE_AUTH_KEY') ?: 'put-your-unique-phrase-here');
+define('LOGGED_IN_KEY',    getenv('LOGGED_IN_KEY') ?: 'put-your-unique-phrase-here');
+define('NONCE_KEY',        getenv('NONCE_KEY') ?: 'put-your-unique-phrase-here');
+define('AUTH_SALT',        getenv('AUTH_SALT') ?: 'put-your-unique-phrase-here');
+define('SECURE_AUTH_SALT', getenv('SECURE_AUTH_SALT') ?: 'put-your-unique-phrase-here');
+define('LOGGED_IN_SALT',   getenv('LOGGED_IN_SALT') ?: 'put-your-unique-phrase-here');
+define('NONCE_SALT',       getenv('NONCE_SALT') ?: 'put-your-unique-phrase-here');
 
 /**#@-*/
 
@@ -65,11 +65,18 @@ define('WP_DEBUG_LOG', true);
 define('DISALLOW_FILE_EDIT', true);
 define('DISALLOW_FILE_MODS', true);
 define('FORCE_SSL', true);
+define('WP_CACHE', true);
 
 /**
  * Hide WordPress version
  */
 remove_action('wp_head', 'wp_generator');
+
+/**
+ * Memory limit
+ */
+define('WP_MEMORY_LIMIT', '256M');
+define('WP_MAX_MEMORY_LIMIT', '512M');
 
 /**
  * Absolute path to the WordPress directory.
